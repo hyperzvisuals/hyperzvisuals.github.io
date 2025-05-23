@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hyperz Visuals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0a0a0a;
+      color: #eaeaea;
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+    header {
+      background-color: rgba(10, 10, 10, 0.9);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.8);
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeSlideDown 0.6s forwards;
+    }
+    @keyframes fadeSlideDown {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #e50914;
+      user-select: none;
+    }
+    nav {
+      display: flex;
+      gap: 1rem;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    nav a {
+      color: #eaeaea;
+      text-decoration: none;
+      transition: color 0.3s, transform 0.3s;
+      user-select: none;
+    }
+    nav a:hover {
+      color: #e50914;
+      transform: scale(1.05);
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      user-select: none;
+    }
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background: #e50914;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile nav - hidden by default */
+    @media (max-width: 700px) {
+      nav {
+        position: fixed;
+        top: 60px;
+        right: 0;
+        background: #0a0a0a;
+        height: calc(100vh - 60px);
+        flex-direction: column;
+        width: 200px;
+        padding: 2rem 1rem;
+        gap: 2rem;
+        transform: translateX(100%);
+        opacity: 0;
+        box-shadow: -3px 0 15px rgba(229, 9, 20, 0.6);
+        border-left: 2px solid #e50914;
+      }
+      nav.active {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      .hamburger {
+        display: flex;
+      }
+    }
+
+    section {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+    section.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #hero {
+      text-align: center;
+    }
+    #hero h1 span {
+      color: #e50914;
+    }
+    #typed {
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #e50914;
+      margin-top: 0.5rem;
+      min-height: 1.7rem;
+    }
+    #about img {
+      max-width: 200px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    #about.show img {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    form input, form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: none;
+      background-color: #1a1a1a;
+      color: #fff;
+      border-radius: 5px;
+      font-size: 1rem;
+      resize: vertical;
+      transition: box-shadow 0.3s ease;
+    }
+    form input:focus, form textarea:focus {
+      outline: none;
+      box-shadow: 0 0 8px #e50914;
+    }
+    form button {
+      background-color: #e50914;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      font-size: 1rem;
+      user-select: none;
+    }
+    form button:hover {
+      background-color: #c40812;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: #111;
+      color: #777;
+      user-select: none;
+    }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .portfolio-item iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .portfolio-item.show iframe {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .testimonial {
+      background-color: #1a1a1a;
+      padding: 1rem;
+      border-left: 4px solid #e50914;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.2);
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .testimonial.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .services-list, .skills-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .service, .skill {
+      background: #111;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #222;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .service.show, .skill.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .progress {
+      background: #222;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar {
+      background: #e50914;
+      height: 10px;
+      width: 0;
+      transition: width 2s;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Hyperz Visuals</div>
+    <nav id="nav-links">
+      <a href="#hero" class="nav-link">Home</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#portfolio" class="nav-link">Portfolio</a>
+      <a href="#testimonials" class="nav-link">Testimonials</a>
+      <a href="#skills" class="nav-link">Skills</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <a href="/hq.html" class="nav-link">Team Login</a>
+    </nav>
+    <div class="hamburger" id="hamburger" aria-label="Toggle navigation" role="button" tabindex="0">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </header>
+
+  <section id="hero">
+    <h1>Welcome to <span>Hyperz Visuals</span></h1>
+    <div id="typed"></div>
+  </section>
+
+  <section id="about">
+    <h2>About Me</h2>
+    <img src="your-photo.jpg" alt="Your Photo" />
+    <p>Hi, I'm Harsh—the creative force behind Hyperz Visuals. I blend storytelling with striking visuals to craft memorable edits that connect emotionally and visually. Let's make magic together.</p>
+  </section>
+
+  <section id="services">
+    <h2>Services</h2>
+    <div class="services-list">
+      <div class="service">Cinematic Reels</div>
+      <div class="service">Motivational Edits</div>
+      <div class="service">Spiritual Visual Storytelling</div>
+      <div class="service">Brand Films & Intros</div>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <h2>Portfolio</h2>
+    <div class="portfolio-grid">
+      <div class="portfolio-item"><iframe src="https://www.youtube.com/embed/vVWGoWo1otE?si=1Wo1JJ9tLwpWkO6g" allowfullscreen></iframe></div>
+      <div class="portfolio-item"><iframe src="https://www.youtube.com/embed/video2" allowfullscreen></iframe></div>
+      <div class="portfolio-item"><iframe src="https://www.youtube.com/embed/video3" allowfullscreen></iframe></div>
+      <div class="portfolio-item"><iframe src="https://www.youtube.com/embed/video4" allowfullscreen></iframe></div>
+      <!-- Add more iframe portfolio items as needed -->
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <h2>Testimonials</h2>
+    <div class="testimonial">"The edit blew our minds. Truly premium work. Highly recommend!" – Client A</div>
+    <div class="testimonial">"Perfectly captured our vision with cinematic flair. 10/10." – Client B</div>
+  </section>
+
+  <section id="skills">
+    <h2>Skills</h2>
+    <div class="skills-list">
+      <div class="skill">
+        Adobe Premiere Pro
+        <div class="progress"><div class="progress-bar" style="width: 0;"></div></div>
+      </div>
+      <div class="skill">
+        After Effects
+        <div class="progress"><div class="progress-bar" style="width: 0;"></div></div>
+      </div>
+      <div class="skill">
+        Adobe After Effects
+      <div class="progress"><div class="progress-bar" style="width: 0;"></div></div>
+    </div>
+    <div class="skill">
+      Color Grading
+      <div class="progress"><div class="progress-bar" style="width: 0;"></div></div>
+    </div>
+    <div class="skill">
+      Storytelling
+      <div class="progress"><div class="progress-bar" style="width: 0;"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Contact Me</h2>
+  <form action="https://formsubmit.co/hyperzvisuals.contact@gmail.com" method="POST" autocomplete="off">
+    <input type="text" name="name" placeholder="Your Name" required />
+    <input type="email" name="email" placeholder="Your Email" required />
+    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+</section>
+
+<footer>
+  © 2025 Hyperz Visuals. All rights reserved.
+</footer>
+
+<script>
+  // Typed text animation
+  const typedText = ["Cinematic Edits", "Motivational Stories", "Spiritual Visuals", "Premium Quality"];
+  let typedIndex = 0, charIndex = 0;
+  const typedElement = document.getElementById("typed");
+
+  function type() {
+    if (charIndex < typedText[typedIndex].length) {
+      typedElement.textContent += typedText[typedIndex].charAt(charIndex);
+      charIndex++;
+      setTimeout(type, 100);
+    } else {
+      setTimeout(erase, 2000);
+    }
+  }
+  function erase() {
+    if (charIndex > 0) {
+      typedElement.textContent = typedText[typedIndex].substring(0, charIndex - 1);
+      charIndex--;
+      setTimeout(erase, 50);
+    } else {
+      typedIndex = (typedIndex + 1) % typedText.length;
+      setTimeout(type, 500);
+    }
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    if(typedText.length) type();
+  });
+
+  // Hamburger menu toggle
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("nav-links");
+
+  hamburger.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+  });
+
+  // Close menu on nav link click (mobile)
+  document.querySelectorAll("nav a").forEach(link => {
+    link.addEventListener("click", () => {
+      if(window.innerWidth <= 700){
+        navLinks.classList.remove("active");
+      }
+    });
+  });
+
+  // Scroll reveal animations
+  const sections = document.querySelectorAll("section");
+  const portfolioItems = document.querySelectorAll(".portfolio-item iframe");
+  const testimonials = document.querySelectorAll(".testimonial");
+  const services = document.querySelectorAll(".service");
+  const skills = document.querySelectorAll(".skill");
+
+  function revealOnScroll() {
+    const triggerBottom = window.innerHeight * 0.85;
+
+    sections.forEach(section => {
+      const sectionTop = section.getBoundingClientRect().top;
+      if(sectionTop < triggerBottom){
+        section.classList.add("show");
+      }
+    });
+
+    portfolioItems.forEach((item, i) => {
+      const itemTop = item.getBoundingClientRect().top;
+      if(itemTop < triggerBottom){
+        item.parentElement.classList.add("show");
+      }
+    });
+
+    testimonials.forEach(item => {
+      const itemTop = item.getBoundingClientRect().top;
+      if(itemTop < triggerBottom){
+        item.classList.add("show");
+      }
+    });
+
+    services.forEach(item => {
+      const itemTop = item.getBoundingClientRect().top;
+      if(itemTop < triggerBottom){
+        item.classList.add("show");
+      }
+    });
+
+    skills.forEach(item => {
+      const itemTop = item.getBoundingClientRect().top;
+      if(itemTop < triggerBottom){
+        item.classList.add("show");
+        // Animate skill progress bars
+        const progressBar = item.querySelector(".progress-bar");
+        if(progressBar.style.width === "0px" || progressBar.style.width === "0%") {
+          let widthPercent = "0%";
+          switch(item.textContent.trim().split("\n")[0]){
+            case "Adobe Premiere Pro": widthPercent = "90%"; break;
+            case "After Effects": widthPercent = "85%"; break;
+            case "Color Grading": widthPercent = "80%"; break;
+            case "Storytelling": widthPercent = "95%"; break;
+          }
+          progressBar.style.width = widthPercent;
+        }
+      }
+    });
+  }
+
+  window.addEventListener("scroll", revealOnScroll);
+  window.addEventListener("load", revealOnScroll);
+</script>
+</body>
+  </html>
