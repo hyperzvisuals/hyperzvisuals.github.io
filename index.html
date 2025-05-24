@@ -455,11 +455,11 @@
 
   window.addEventListener("scroll", revealOnScroll);
   window.addEventListener("load", revealOnScroll);
-  // Import Firebase functions
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+  <!-- Firebase v9 CDN SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
 
-  // Your Firebase config
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyBVPwQE9ovzcYJMsGQnndyjYiZcNjpv4-k",
     authDomain: "hyperzhq-f1910.firebaseapp.com",
@@ -471,11 +471,11 @@
     measurementId: "G-829QB20J5Y"
   };
 
-  // Initialize Firebase & Analytics
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const analytics = firebase.analytics();
 
-  console.log("Firebase Analytics connected");
+  console.log("Firebase Analytics initialized (compat mode)");
 </script>
 </script>
 </body>
