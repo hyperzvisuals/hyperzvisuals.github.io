@@ -455,6 +455,28 @@
 
   window.addEventListener("scroll", revealOnScroll);
   window.addEventListener("load", revealOnScroll);
+  // Import Firebase functions
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBVPwQE9ovzcYJMsGQnndyjYiZcNjpv4-k",
+    authDomain: "hyperzhq-f1910.firebaseapp.com",
+    databaseURL: "https://hyperzhq-f1910-default-rtdb.firebaseio.com",
+    projectId: "hyperzhq-f1910",
+    storageBucket: "hyperzhq-f1910.firebasestorage.app",
+    messagingSenderId: "454289109507",
+    appId: "1:454289109507:web:4e6f0b4723145ac7591436",
+    measurementId: "G-829QB20J5Y"
+  };
+
+  // Initialize Firebase & Analytics
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  console.log("Firebase Analytics connected");
+</script>
 </script>
 </body>
   </html>
