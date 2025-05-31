@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperz Visuals | Team HQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        :root {
+            --primary-bg: #0d0d0d;
+            --secondary-bg: #111111;
+            --accent-red: #e50914;
+            --accent-red-dark: #b20710;
+            --accent-red-light: #ff525d;
+            --text-light: #f5f5f5;
+            --text-gray: #a3a3a3;
+            --card-bg: #1a1a1a;
+            --card-border: rgba(229, 9, 20, 0.1);
+            --transition: all 0.3s ease;
+            --online: #2ecc71;
+            --offline: #7f8c8d;
+            --busy: #e74c3c;
+            --away: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 40px;
+            width: 400px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--text-light) 70%, var(--accent-red) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 30px;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Space Grotesk', sans-serif;
+            margin-top: 20px;
+        }
+
+        .login-btn:hover {
+            background: var(--accent-red-dark);
+        }
+
+        .login-footer {
+            margin-top: 25px;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: var(--accent-red);
+            text-decoration: none;
+        }
+
+        .error-message {
+            color: var(--accent-red);
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* App Container */
+        .app-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 70px 1fr;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar main";
+            height: 100vh;
+            display: none;
+        }
+
+        /* Header */
+        header {
+            grid-area: header;
+            background: var(--secondary-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--text-light) 70%, var(--accent-red) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent-red);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .header-icon:hover {
+            background: var(--accent-red);
+            transform: translateY(-3px);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-red);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid var(--accent-red-light);
+        }
+
+        .user-info h3 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .user-info p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--secondary-bg);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .nav-section {
+            padding: 30px 0;
+        }
+
+        .nav-title {
+            padding: 0 20px 15px;
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            padding: 0 15px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(229, 9, 20, 0.1);
+            color: var(--accent-red-light);
+        }
+
+        .nav-links a.active {
+            background: rgba(229, 9, 20, 0.2);
+        }
+
+        .nav-links a i {
+            width: 24px;
+            text-align: center;
+        }
+
+        .team-section {
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .team-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 15px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .team-member:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .online-status {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--online);
+            border: 2px solid var(--secondary-bg);
+        }
+
+        .offline .online-status {
+            background: var(--offline);
+        }
+
+        .busy .online-status {
+            background: var(--busy);
+        }
+
+        .away .online-status {
+            background: var(--away);
+        }
+
+        .member-info h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .member-info p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* Main Content */
+        main {
+            grid-area: main;
+            background: var(--primary-bg);
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            grid-template-rows: 1fr;
+            grid-template-areas: "content chat";
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            grid-area: content;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            height: fit-content;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .card-header i {
+            color: var(--accent-red);
+            cursor: pointer;
+        }
+
+        /* Tasks */
+        .tasks-container {
+            grid-column: span 2;
+        }
+
+        .task {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .task:last-child {
+            border-bottom: none;
+        }
+
+        .task-check {
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+
+        .task-check input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-red);
+        }
+
+        .task-info {
+            flex-grow: 1;
+        }
+
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .task-desc {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+        }
+
+        .task-priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .priority-high {
+            background: rgba(229, 9, 20, 0.2);
+            color: var(--accent-red-light);
+        }
+
+        .priority-medium {
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+
+        .priority-low {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .task-assignee {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .assignee-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* Video Meeting */
+        .meeting-container {
+            grid-column: span 2;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .video-container {
+            flex-grow: 1;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .video-participant {
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-participant video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .participant-name {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+        }
+
+        .video-placeholder i {
+            font-size: 4rem;
+            color: var(--accent-red);
+            margin-bottom: 20px;
+        }
+
+        .video-placeholder h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .video-placeholder p {
+            color: var(--text-gray);
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .join-meeting-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .join-meeting-btn:hover {
+            background: var(--accent-red-dark);
+        }
+
+        .meeting-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .control-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .control-btn.primary {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .control-btn.primary:hover {
+            background: var(--accent-red-dark);
+        }
+
+        .control-btn.active {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        /* Chat */
+        .chat-container {
+            grid-area: chat;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .received {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom-left-radius: 5px;
+        }
+
+        .sent {
+            align-self: flex-end;
+            background: var(--accent-red);
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .message-content {
+            font-size: 0.95rem;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .chat-input {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+        }
+
+        .chat-input button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chat-input button:hover {
+            background: var(--accent-red-dark);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "content"
+                    "chat";
+            }
+            
+            .chat-container {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 70px 1fr;
+            }
+            
+            .logo h1 span {
+                display: none;
+            }
+            
+            .nav-title, .member-info, .user-info {
+                display: none;
+            }
+            
+            .nav-links a span {
+                display: none;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
+            .team-member {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">HYPERZ VISUALS</div>
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="team@hyperzvisuals.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="login-btn">Enter HQ</button>
+                <div class="error-message" id="error-message">Invalid credentials. Please try again.</div>
+            </form>
+            <div class="login-footer">
+                <p>Team Portal for Hyperz Visuals</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container" class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <h1>HYPERZ<span>VISUALS</span></h1>
+            </div>
+            <div class="header-controls">
+                <div class="header-icon">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge" id="notification-count">0</div>
+                </div>
+                <div class="header-icon" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="user-avatar">H</div>
+                    <div class="user-info">
+                        <h3 id="username">Hyperz</h3>
+                        <p id="user-role">Admin</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="nav-section">
+                <ul class="nav-links">
+                    <li>
+                        <a href="#" class="active" id="nav-dashboard">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-meetings">
+                            <i class="fas fa-video"></i>
+                            <span>Meetings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-tasks">
+                            <i class="fas fa-tasks"></i>
+                            <span>Tasks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-projects">
+                            <i class="fas fa-folder"></i>
+                            <span>Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-team">
+                            <i class="fas fa-users"></i>
+                            <span>Team</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Team Members</div>
+                <div class="team-list" id="team-list">
+                    <!-- Team members will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main>
+            <div class="dashboard" id="dashboard-content">
+                <!-- Dashboard content will be loaded dynamically -->
+            </div>
+
+            <!-- Chat -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <i class="fas fa-comments"></i>
+                    <h3>Team Chat</h3>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Chat messages will be populated dynamically -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+                    <button id="send-message-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgUAaWa4iiwb5uJui7y3iHiPc75T3dw74",
+            authDomain: "hyperzhq-ac80e.firebaseapp.com",
+            databaseURL: "https://hyperzhq-ac80e-default-rtdb.firebaseio.com",
+            projectId: "hyperzhq-ac80e",
+            storageBucket: "hyperzhq-ac80e.firebasestorage.app",
+            messagingSenderId: "465944287933",
+            appId: "1:465944287933:web:b0e1b07118f061ca7bf5d4",
+            measurementId: "G-N63FEYR8RN"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const realtimeDB = firebase.database();
+
+        // DOM Elements
+        const loginScreen = document.getElementById('login-screen');
+        const appContainer = document.getElementById('app-container');
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendMessageBtn = document.getElementById('send-message-btn');
+        const userAvatar = document.getElementById('user-avatar');
+        const username = document.getElementById('username');
+        const userRole = document.getElementById('user-role');
+        const teamList = document.getElementById('team-list');
+        const logoutBtn = document.getElementById('logout-btn');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const notificationCount = document.getElementById('notification-count');
+
+        // Current user
+        let currentUser = null;
+        let chatRef = null;
+        let teamMembersRef = null;
+        let tasksRef = null;
+        let statusRef = null;
+        let userStatusRef = null;
+        let localStream = null;
+        let isMuted = false;
+        let isVideoOn = true;
+
+        // Initialize application
+        function initApp() {
+            // Check auth state
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // User is signed in
+                    currentUser = user;
+                    showApp();
+                    setupRealtimeFeatures();
+                } else {
+                    // User is signed out
+                    showLogin();
+                }
+            });
+        }
+
+        // Show login screen
+        function showLogin() {
+            loginScreen.style.display = 'flex';
+            appContainer.style.display = 'none';
+        }
+
+        // Show application
+        function showApp() {
+            loginScreen.style.display = 'none';
+            appContainer.style.display = 'grid';
+            
+            // Set user info
+            const displayName = currentUser.email.split('@')[0];
+            username.textContent = displayName;
+            userAvatar.textContent = displayName.charAt(0).toUpperCase();
+            userRole.textContent = "Team Member";
+            
+            // Load dashboard
+            loadDashboard();
+            
+            // Setup navigation
+            setupNavigation();
+        }
+
+        // Setup real-time features
+        function setupRealtimeFeatures() {
+            // Realtime Chat
+            chatRef = realtimeDB.ref('chat');
+            chatRef.limitToLast(20).on('child_added', snapshot => {
+                const message = snapshot.val();
+                addMessageToChat(message.sender, message.content, message.timestamp, message.userId === currentUser.uid ? 'sent' : 'received');
+            });
+            
+            // Team members presence
+            teamMembersRef = db.collection('teamMembers');
+            statusRef = realtimeDB.ref('status');
+            userStatusRef = realtimeDB.ref('status/' + currentUser.uid);
+            
+            // Update user status
+            realtimeDB.ref('.info/connected').on('value', snapshot => {
+                if (snapshot.val()) {
+                    // User is online
+                    userStatusRef.onDisconnect().set({
+                        state: 'offline',
+                        lastChanged: firebase.database.ServerValue.TIMESTAMP
+                    }).then(() => {
+                        userStatusRef.set({
+                            state: 'online',
+                            userId: currentUser.uid,
+                            email: currentUser.email,
+                            name: username.textContent,
+                            lastChanged: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    });
+                }
+            });
+            
+            // Load team members
+            loadTeamMembers();
+            
+            // Listen for team member status changes
+            statusRef.on('value', snapshot => {
+                const statuses = snapshot.val();
+                if (statuses) {
+                    updateTeamStatuses(statuses);
+                }
+            });
+            
+            // Setup tasks
+            setupTasks();
+        }
+
+        // Load team members
+        async function loadTeamMembers() {
+            teamList.innerHTML = '';
+            
+            try {
+                const snapshot = await teamMembersRef.get();
+                snapshot.forEach(doc => {
+                    const member = doc.data();
+                    addTeamMember(member);
+                });
+            } catch (error) {
+                console.error('Error loading team members:', error);
+            }
+        }
+
+        // Add team member to list
+        function addTeamMember(member) {
+            const memberElement = document.createElement('div');
+            memberElement.className = `team-member`;
+            memberElement.id = `member-${member.userId}`;
+            memberElement.innerHTML = `
+                <div class="member-avatar">
+                    <span>${member.name.charAt(0)}</span>
+                    <div class="online-status"></div>
+                </div>
+                <div class="member-info">
+                    <h4>${member.name}</h4>
+                    <p>${member.role}</p>
+                </div>
+            `;
+            teamList.appendChild(memberElement);
+        }
+
+        // Update team member statuses
+        function updateTeamStatuses(statuses) {
+            Object.keys(statuses).forEach(userId => {
+                const status = statuses[userId];
+                const memberElement = document.getElementById(`member-${userId}`);
+                if (memberElement) {
+                    // Remove all status classes
+                    memberElement.classList.remove('online', 'offline', 'busy', 'away');
+                    
+                    // Add current status
+                    memberElement.classList.add(status.state);
+                    
+                    // Update status indicator
+                    const statusIndicator = memberElement.querySelector('.online-status');
+                    if (statusIndicator) {
+                        statusIndicator.style.backgroundColor = `var(--${status.state})`;
+                    }
+                } else if (status.name) {
+                    // Add new member if not in list
+                    addTeamMember({
+                        userId: userId,
+                        name: status.name,
+                        role: "Team Member"
+                    });
+                }
+            });
+        }
+
+        // Load dashboard
+        function loadDashboard() {
+            dashboardContent.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Active Projects</h3>
+                    </div>
+                    <div class="project-list">
+                        <div class="project-item">
+                            <h4>Netflix Documentary</h4>
+                            <p>Editing Phase</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%; background: var(--accent-red);"></div>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <h4>Tech Startup Campaign</h4>
+                            <p>Motion Graphics</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 40%; background: #3498db;"></div>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <h4>Music Video Production</h4>
+                            <p>Color Grading</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 90%; background: #2ecc71;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Today's Schedule</h3>
+                    </div>
+                    <div class="schedule-list">
+                        <div class="schedule-item">
+                            <div class="time">10:00 AM</div>
+                            <div class="event">
+                                <h4>Client Review Meeting</h4>
+                                <p>Netflix Documentary</p>
+                            </div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="time">1:30 PM</div>
+                            <div class="event">
+                                <h4>Team Sync</h4>
+                                <p>All members</p>
+                            </div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="time">3:00 PM</div>
+                            <div class="event">
+                                <h4>Motion Graphics Review</h4>
+                                <p>Tech Startup Project</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card tasks-container">
+                    <div class="card-header">
+                        <h3>Team Tasks</h3>
+                        <i class="fas fa-plus" id="add-task-btn"></i>
+                    </div>
+                    <div class="tasks-list" id="tasks-list">
+                        <!-- Tasks will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="card meeting-container">
+                    <div class="card-header">
+                        <h3>Team Meeting Room</h3>
+                    </div>
+                    <div class="video-container">
+                        <div class="video-placeholder" id="video-placeholder">
+                            <i class="fas fa-video"></i>
+                            <h3>Start a Team Meeting</h3>
+                            <p>Click "Join Meeting" to start a video call with your team</p>
+                            <button class="join-meeting-btn" id="join-meeting-btn">Join Meeting</button>
+                        </div>
+                    </div>
+                    <div class="meeting-controls">
+                        <div class="control-btn" id="mute-btn">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <div class="control-btn" id="video-btn">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="control-btn primary" id="end-call-btn">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="control-btn" id="screen-share-btn">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <div class="control-btn" id="chat-btn">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Setup task list
+            setupTasks();
+            
+            // Setup meeting button
+            document.getElementById('join-meeting-btn').addEventListener('click', startMeeting);
+            document.getElementById('end-call-btn').addEventListener('click', endMeeting);
+            document.getElementById('mute-btn').addEventListener('click', toggleMute);
+            document.getElementById('video-btn').addEventListener('click', toggleVideo);
+            
+            // Setup add task button
+            document.getElementById('add-task-btn').addEventListener('click', addNewTask);
+        }
+
+        // Setup tasks
+        async function setupTasks() {
+            const tasksList = document.getElementById('tasks-list');
+            if (!tasksList) return;
+            
+            tasksList.innerHTML = '';
+            
+            try {
+                tasksRef = db.collection('tasks');
+                const snapshot = await tasksRef.orderBy('createdAt', 'desc').limit(5).get();
+                
+                if (snapshot.empty) {
+                    tasksList.innerHTML = '<p class="no-tasks">No tasks found. Create your first task!</p>';
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const task = doc.data();
+                    addTaskToList(task, doc.id);
+                });
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                tasksList.innerHTML = '<p class="error">Failed to load tasks. Please try again later.</p>';
+            }
+        }
+
+        // Add task to list
+        function addTaskToList(task, taskId) {
+            const tasksList = document.getElementById('tasks-list');
+            if (!tasksList) return;
+            
+            const taskElement = document.createElement('div');
+            taskElement.className = 'task';
+            taskElement.dataset.id = taskId;
+            taskElement.innerHTML = `
+                <div class="task-check">
+                    <input type="checkbox" id="task-${taskId}" ${task.completed ? 'checked' : ''}>
+                </div>
+                <div class="task-info">
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-desc">${task.description || ''}</div>
+                    <div class="task-meta">
+                        <div class="task-priority priority-${task.priority || 'medium'}">${(task.priority || 'medium').charAt(0).toUpperCase() + (task.priority || 'medium').slice(1)}</div>
+                        <div class="task-deadline">Due: ${task.deadline || 'ASAP'}</div>
+                        <div class="task-assignee">
+                            <div class="assignee-avatar">${task.assignee?.charAt(0) || '?'}</div>
+                            <span>${task.assignee || 'Unassigned'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            tasksList.appendChild(taskElement);
+            
+            // Add event listener for task completion
+            const checkbox = taskElement.querySelector('input[type="checkbox"]');
+            checkbox.addEventListener('change', () => {
+                updateTaskCompletion(taskId, checkbox.checked);
+            });
+        }
+
+        // Update task completion status
+        async function updateTaskCompletion(taskId, completed) {
+            try {
+                await tasksRef.doc(taskId).update({
+                    completed: completed,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Update UI
+                const taskElement = document.querySelector(`.task[data-id="${taskId}"]`);
+                if (taskElement) {
+                    taskElement.classList.toggle('completed', completed);
+                }
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('Failed to update task status. Please try again.');
+            }
+        }
+
+        // Add new task
+        async function addNewTask() {
+            const title = prompt('Enter task title:');
+            if (!title) return;
+            
+            const description = prompt('Enter task description (optional):');
+            const assignee = prompt('Assign to (team member name):') || 'Unassigned';
+            const priority = prompt('Priority (high/medium/low):', 'medium') || 'medium';
+            
+            try {
+                const newTask = {
+                    title: title,
+                    description: description,
+                    assignee: assignee,
+                    priority: priority.toLowerCase(),
+                    completed: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdBy: currentUser.uid
+                };
+                
+                const docRef = await tasksRef.add(newTask);
+                addTaskToList({...newTask, id: docRef.id}, docRef.id);
+                
+                // Send notification
+                sendNotification(`New task created: ${title}`, 'tasks');
+            } catch (error) {
+                console.error('Error adding task:', error);
+                alert('Failed to create task. Please try again.');
+            }
+        }
+
+        // Start meeting
+        async function startMeeting() {
+            try {
+                // Access camera and microphone
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                });
+                
+                // Update UI
+                document.getElementById('video-placeholder').style.display = 'none';
+                const videoContainer = document.querySelector('.video-container');
+                videoContainer.innerHTML = '';
+                
+                // Add local video
+                const localVideo = document.createElement('video');
+                localVideo.id = 'local-video';
+                localVideo.autoplay = true;
+                localVideo.playsInline = true;
+                localVideo.muted = true;
+                localVideo.srcObject = localStream;
+                
+                const localParticipant = document.createElement('div');
+                localParticipant.className = 'video-participant';
+                localParticipant.innerHTML = `
+                    <div class="participant-name">You</div>
+                `;
+                localParticipant.appendChild(localVideo);
+                videoContainer.appendChild(localParticipant);
+                
+                // Add remote participants placeholder
+                const teamSnapshot = await teamMembersRef.get();
+                teamSnapshot.forEach(doc => {
+                    const member = doc.data();
+                    if (member.userId !== currentUser.uid) {
+                        const remoteParticipant = document.createElement('div');
+                        remoteParticipant.className = 'video-participant';
+                        remoteParticipant.id = `participant-${member.userId}`;
+                        remoteParticipant.innerHTML = `
+                            <div class="video-placeholder" style="display: flex; width: 100%; height: 100%;">
+                                <i class="fas fa-user" style="font-size: 3rem;"></i>
+                            </div>
+                            <div class="participant-name">${member.name}</div>
+                        `;
+                        videoContainer.appendChild(remoteParticipant);
+                    }
+                });
+                
+                // Update meeting controls
+                document.getElementById('mute-btn').classList.add('active');
+                document.getElementById('video-btn').classList.add('active');
+                
+                // Send notification
+                sendNotification(`${username.textContent} has started a meeting`, 'meeting');
+            } catch (error) {
+                console.error('Error accessing media devices:', error);
+                alert('Could not access camera and microphone. Please check permissions.');
+            }
+        }
+
+        // End meeting
+        function endMeeting() {
+            // Stop all tracks
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            // Reset UI
+            const videoContainer = document.querySelector('.video-container');
+            videoContainer.innerHTML = `
+                <div class="video-placeholder" id="video-placeholder">
+                    <i class="fas fa-video"></i>
+                    <h3>Start a Team Meeting</h3>
+                    <p>Click "Join Meeting" to start a video call with your team</p>
+                    <button class="join-meeting-btn" id="join-meeting-btn">Join Meeting</button>
+                </div>
+            `;
+            
+            // Reattach event listener
+            document.getElementById('join-meeting-btn').addEventListener('click', startMeeting);
+            
+            // Reset controls
+            document.getElementById('mute-btn').classList.remove('active');
+            document.getElementById('video-btn').classList.remove('active');
+        }
+
+        // Toggle mute
+        function toggleMute() {
+            if (!localStream) return;
+            
+            isMuted = !isMuted;
+            localStream.getAudioTracks()[0].enabled = !isMuted;
+            
+            const muteBtn = document.getElementById('mute-btn');
+            muteBtn.classList.toggle('active', !isMuted);
+            muteBtn.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>';
+        }
+
+        // Toggle video
+        function toggleVideo() {
+            if (!localStream) return;
+            
+            isVideoOn = !isVideoOn;
+            localStream.getVideoTracks()[0].enabled = isVideoOn;
+            
+            const videoBtn = document.getElementById('video-btn');
+            videoBtn.classList.toggle('active', isVideoOn);
+            videoBtn.innerHTML = isVideoOn ? '<i class="fas fa-video"></i>' : '<i class="fas fa-video-slash"></i>';
+        }
+
+        // Send notification
+        function sendNotification(message, type) {
+            // In a real app, this would send to other team members
+            // For now, we'll just update the notification badge
+            const count = parseInt(notificationCount.textContent) + 1;
+            notificationCount.textContent = count;
+            
+            // Add to notifications collection
+            db.collection('notifications').add({
+                message: message,
+                type: type,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false,
+                userId: currentUser.uid
+            });
+        }
+
+        // Add message to chat
+        function addMessageToChat(sender, content, timestamp, type) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${type}`;
+            
+            // Format timestamp
+            const date = new Date(timestamp);
+            const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageElement.innerHTML = `
+                <div class="message-sender">${sender}</div>
+                <div class="message-content">${content}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+            chatMessages.appendChild(messageElement);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Send chat message
+        async function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            try {
+                // Create message object
+                const messageData = {
+                    sender: username.textContent,
+                    content: message,
+                    userId: currentUser.uid,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+                
+                // Push to realtime database
+                await chatRef.push(messageData);
+                
+                // Clear input
+                chatInput.value = '';
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        // Setup navigation
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Load appropriate content
+                    const target = this.id.split('-')[1];
+                    if (target === 'dashboard') {
+                        loadDashboard();
+                    } else {
+                        dashboardContent.innerHTML = `
+                            <div class="card" style="grid-column: span 2; height: 500px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                <i class="fas fa-${target === 'meetings' ? 'video' : target === 'tasks' ? 'tasks' : target === 'projects' ? 'folder' : 'users'}" style="font-size: 4rem; color: var(--accent-red); margin-bottom: 20px;"></i>
+                                <h2>${target.charAt(0).toUpperCase() + target.slice(1)} Section</h2>
+                                <p>This section is under development and will be available soon.</p>
+                                <button class="btn" style="margin-top: 20px;" onclick="loadDashboard()">Back to Dashboard</button>
+                            </div>
+                        `;
+                    }
+                });
+            });
+        }
+
+        // Handle login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                // Sign in with email and password
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                currentUser = userCredential.user;
+                
+                // Add user to team members if not exists
+                const userDoc = await db.collection('teamMembers').doc(currentUser.uid).get();
+                if (!userDoc.exists) {
+                    const name = email.split('@')[0];
+                    await db.collection('teamMembers').doc(currentUser.uid).set({
+                        userId: currentUser.uid,
+                        email: email,
+                        name: name,
+                        role: "Team Member",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                showApp();
+                setupRealtimeFeatures();
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = error.message || 'Login failed. Please try again.';
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        // Handle logout
+        logoutBtn.addEventListener('click', () => {
+            // Update user status to offline
+            if (userStatusRef) {
+                userStatusRef.set({
+                    state: 'offline',
+                    userId: currentUser.uid,
+                    email: currentUser.email,
+                    lastChanged: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+            
+            // Sign out
+            auth.signOut().then(() => {
+                showLogin();
+            });
+        });
+
+        // Handle sending messages
+        sendMessageBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        // Initialize the app
+        initApp();
+    </script>
+</body>
+</html>
