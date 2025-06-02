@@ -93,5 +93,24 @@
     <p>You can expect a response within <strong>24–48 hours</strong>.</p>
     <button class="btn" onclick="window.location.href='index.html'">Return Home</button>
   </div>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    emailjs.init("xuoUvFopMIsM_R85O"); // Your public key
+
+    const params = new URLSearchParams(window.location.search);
+    const clientEmail = params.get("email");
+
+    if (clientEmail) {
+      emailjs.send("service_q3ld9dq", "template_1tllseb", {
+        to_email: clientEmail,
+        name: "Client",
+        onboarding_link: "https://hyperzvisuals.github.io/onboarding"
+      }).then(() => {
+        console.log("✅ Onboarding email sent to", clientEmail);
+      }).catch((err) => {
+        console.error("❌ Failed to send onboarding email", err);
+      });
+    }
+  </script>
 </body>
 </html>
