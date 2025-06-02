@@ -104,11 +104,10 @@ service_18naa37<!DOCTYPE html>
       emailjs.send("service_18naa37", "template_1tllseb", {
         to_email: clientEmail,
         name: "Client",
-        onboarding_link: "https://hyperzvisuals.github.io/onboarding"
       }).then(() => {
-        console.log("✅ Onboarding email sent to", clientEmail);
+        console.log("✅ email sent to", clientEmail);
       }).catch((err) => {
-        console.error("❌ Failed to send onboarding email", err);
+        console.error("❌ Failed to send email", err);
       });
     }
   </script>
