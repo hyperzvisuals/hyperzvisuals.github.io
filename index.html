@@ -571,7 +571,7 @@ section {
     <input type="email" name="email" placeholder="Your Email" required />
     <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
     <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_next" value="https://hyperzvisuals.github.io/typage.html">
+    <input type="hidden" name="_next" value="">
     <button type="submit">Send</button>
   </form>
 </section>
@@ -734,6 +734,12 @@ section {
 
   window.addEventListener("scroll", revealOnScroll);
   window.addEventListener("load", revealOnScroll);
+</script>
+  <script>
+  document.querySelector("form").addEventListener("submit", function () {
+    const email = this.querySelector("input[name='email']").value;
+    this.querySelector("input[name='_next']").value = `https://hyperzvisuals.github.io/typage.html?email=${encodeURIComponent(email)}`;
+  });
 </script>
 </body>
   </html>
