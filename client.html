@@ -86,5 +86,60 @@
   </div>  <div class="footer">
     Hyperz Visuals • www.hyperzvisuals.com • Instagram: @hyperzvisuals
   </div>
+  <script>
+// === Embedded client data (was clients.js) ===
+const CLIENTS_DATA = {
+  "clt_aman": {
+    "clientName": "Aman Kumar",
+    "email": "aman@example.com",
+    "projectTitle": "Wedding Cinematic",
+    "type": "Cinematic Video",
+    "footage": "https://drive.google.com/aman-footage",
+    "style": "Aesthetic",
+    "videoCount": "3",
+    "deliveryDate": "2025-06-30",
+    "amount": "8000",
+    "dueDate": "2025-06-28",
+    "clientLink": "https://hyperzvisuals.github.io/client.html?id=clt_aman"
+  },
+  "clt_priya": {
+    "clientName": "Priya Sharma",
+    "email": "priya@example.com",
+    "projectTitle": "Brand Ad",
+    "type": "Commercial Video",
+    "footage": "https://drive.google.com/priya-footage",
+    "style": "Cinematic",
+    "videoCount": "2",
+    "deliveryDate": "2025-07-03",
+    "amount": "9500",
+    "dueDate": "2025-06-30",
+    "clientLink": "https://hyperzvisuals.github.io/client.html?id=clt_priya"
+  }
+};
+
+// === Logic to inject data (was client.js) ===
+(function loadClientData() {
+  const id = new URLSearchParams(window.location.search).get("id");
+  const client = CLIENTS_DATA[id];
+  if (!id || !client) {
+    alert("Client not found or missing ID.");
+    return;
+  }
+
+  document.body.innerHTML = document.body.innerHTML
+    .replace(/Client Name/g, client.clientName)
+    .replace("[Client Email]", client.email)
+    .replace("[Project Title]", client.projectTitle)
+    .replace("[Type]", client.type)
+    .replace("[Google Drive Link]", "View Footage")
+    .replace(/href=\"#\"/, `href=\"${client.footage}\"`)
+    .replace("[Cinematic / Fast-cut / Aesthetic]", client.style)
+    .replace("[X]", client.videoCount)
+    .replace("[Date]", client.deliveryDate)
+    .replace("₹[Amount]", "₹" + client.amount)
+    .replace("Due Date:</span> [Date]", `Due Date:</span> ${client.dueDate}`)
+    .replace("yourdomain.com/client/[client-id]", client.clientLink);
+})();
+  </script>
 </body>
 </html>
