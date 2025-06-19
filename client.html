@@ -95,7 +95,22 @@
 
 <!-- 🔹 Client Approval Button -->
 <div style="margin-top: 2rem; text-align: center;">
-  <form action="https://formsubmit.co/hyperz5005@gmail.com" method="POST">
+  <form action="https://formsubmit.co/hyperz5005@gmail.com" method="POST" onsubmit="return validateAgreement();">
+  <input type="hidden" name="Client" value="[Client Name]">
+  <input type="hidden" name="Approval Status" value="Approved ✅">
+
+  <label style="display: block; margin-bottom: 1rem;">
+    <input type="checkbox" id="agreeBox" style="margin-right: 10px;">
+    I’ve read and agree to the client agreement above.
+  </label>
+
+  <button type="submit" id="approveBtn" style="margin-top: 1rem; padding: 12px 24px; background: gray; color: #fff; border: none; font-weight: bold; cursor: pointer;" disabled>
+    ✅ I Approve This Project
+  </button>
+  <div id="warningText" style="color: red; margin-top: 0.5rem; display: none;">
+    ⚠️ Please agree to the terms before continuing.
+  </div>
+  </form>
     <input type="hidden" name="Client" value="[Client Name]">
     <input type="hidden" name="Approval Status" value="Approved ✅">
     <button type="submit" style="margin-top: 1rem; padding: 12px 24px; background: #0f0; color: #000; border: none; font-weight: bold; cursor: pointer;">
@@ -173,6 +188,27 @@ const CLIENTS_DATA = {
     .replace("Due Date:</span> [Date]", `Due Date:</span> ${client.dueDate}`)
     .replace("yourdomain.com/client/[client-id]", client.clientLink);
 })();
+    <script>
+  const agreeCheckbox = document.getElementById('agreeBox');
+  const approveBtn = document.getElementById('approveBtn');
+  const warningText = document.getElementById('warningText');
+
+  approveBtn.disabled = true;
+
+  agreeCheckbox.addEventListener('change', () => {
+    approveBtn.disabled = !agreeCheckbox.checked;
+    approveBtn.style.background = agreeCheckbox.checked ? '#0f0' : 'gray';
+    warningText.style.display = 'none';
+  });
+
+  function validateAgreement() {
+    if (!agreeCheckbox.checked) {
+      warningText.style.display = 'block';
+      return false;
+    }
+    return true;
+  }
+</script>
     </script>
 </body>
 </html>
