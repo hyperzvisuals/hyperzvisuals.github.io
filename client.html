@@ -95,7 +95,7 @@
 
 <!-- 🔹 Client Approval Button -->
 <div style="margin-top: 2rem; text-align: center;">
-  <form action="https://formsubmit.co/hyperz5005@gmail.com" method="POST" onsubmit="return validateAgreement();">
+  <form action="https://formsubmit.co/hyperz5005@gmail.com" method="POST">
   <input type="hidden" name="Client" value="[Client Name]">
   <input type="hidden" name="Approval Status" value="Approved ✅">
 
@@ -188,27 +188,6 @@ const CLIENTS_DATA = {
     .replace("Due Date:</span> [Date]", `Due Date:</span> ${client.dueDate}`)
     .replace("yourdomain.com/client/[client-id]", client.clientLink);
 })();
-    <script>
-  const agreeCheckbox = document.getElementById('agreeBox');
-  const approveBtn = document.getElementById('approveBtn');
-  const warningText = document.getElementById('warningText');
-
-  approveBtn.disabled = true;
-
-  agreeCheckbox.addEventListener('change', () => {
-    approveBtn.disabled = !agreeCheckbox.checked;
-    approveBtn.style.background = agreeCheckbox.checked ? '#0f0' : 'gray';
-    warningText.style.display = 'none';
-  });
-
-  function validateAgreement() {
-    if (!agreeCheckbox.checked) {
-      warningText.style.display = 'block';
-      return false;
-    }
-    return true;
-  }
-</script>
     </script>
 </body>
 </html>
