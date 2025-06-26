@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperz Visuals | Elite Creative Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.21/dist/vanta.net.min.js"></script>
+    <script data-goatcounter="https://hyperz.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    <style>
+        :root {
+            --primary: #ffffff;
+            --secondary: #f5f5f7;
+            --tertiary: #d2d2d7;
+            --dark: #1d1d1f;
+            --text: #1d1d1f;
+            --text-secondary: #86868b;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background-color: var(--primary);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            transition: background-color 0.3s ease;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 2rem 0;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        header.scrolled {
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--text);
+            text-decoration: none;
+            z-index: 10;
+        }
+        
+        .logo span {
+            color: var(--dark);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--dark);
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #vanta-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding-top: 5rem;
+        }
+        
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -1.5px;
+            color: #000;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #333;
+            max-width: 600px;
+            margin-bottom: 3rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .hero-btns {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border-radius: 30px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .btn:hover:after {
+            transform: translateX(0);
+        }
+        
+        .btn-primary {
+            background: var(--dark);
+            color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--tertiary);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--dark);
+            transform: translateY(-3px);
+        }
+        
+        /* Grid Section */
+        .grid-section {
+            padding: 8rem 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+        
+        .section-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .grid-item {
+            background: var(--primary);
+            border: 1px solid var(--tertiary);
+            padding: 2.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.05);
+            border-color: var(--dark);
+        }
+        
+        .grid-item:hover .icon {
+            transform: scale(1.1);
+        }
+        
+        .icon {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+        
+        .grid-item h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .grid-item p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .grid-item .btn {
+            padding: 0.8rem 1.8rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Process Section */
+        .process {
+            padding: 8rem 0;
+            background: var(--secondary);
+        }
+        
+        .process-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .process-step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .process-step:not(:last-child):after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -30px;
+            height: 2px;
+            width: 60px;
+            background: var(--tertiary);
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--dark);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-weight: 600;
+        }
+        
+        .process-step h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Showcase Section */
+        .showcase {
+            padding: 8rem 0;
+        }
+        
+        .showcase-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .showcase-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            letter-spacing: -1px;
+            font-weight: 600;
+        }
+        
+        .showcase-content p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .showcase-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--tertiary);
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        
+        .showcase-image iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+        
+        /* Portfolio Gallery */
+        .portfolio {
+            padding: 8rem 0;
+            background: var(--secondary);
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .portfolio-video-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        }
+        
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 1.5rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .portfolio-video-item:hover .portfolio-overlay {
+            transform: translateY(0);
+        }
+        
+        /* Stats Section */
+        .stats {
+            padding: 5rem 0;
+            background: var(--secondary);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .stat-item h3 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-item p {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 8rem 0;
+        }
+        
+        .testimonial-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .testimonial {
+            background: var(--primary);
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            position: relative;
+            border: 1px solid var(--tertiary);
+        }
+        
+        .testimonial p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .client {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .client img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            object-fit: cover;
+            border: 1px solid var(--tertiary);
+        }
+        
+        .client-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+        
+        .client-info p {
+            color: var(--text-secondary);
+            margin: 0;
+            font-style: normal;
+        }
+        
+        /* Enhanced Contact Section */
+        .contact {
+            padding: 8rem 0;
+            background: var(--secondary);
+        }
+        
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5rem;
+        }
+        
+        .contact-info {
+            padding: 2rem;
+            background: var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--tertiary);
+        }
+        
+        .contact-form {
+            padding: 2.5rem;
+            background: var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--tertiary);
+        }
+        
+        .contact-form h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary);
+            border: 1px solid var(--tertiary);
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1rem;
+            transition: var(--transition);
+            border-radius: 8px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--dark);
+            box-shadow: 0 0 0 3px rgba(29, 29, 31, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .contact-details {
+            margin: 2rem 0;
+        }
+        
+        .contact-details p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .contact-details i {
+            margin-right: 15px;
+            width: 30px;
+            height: 30px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: var(--dark);
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+        
+        .social-links a:hover {
+            background: var(--dark);
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 5rem 0 2rem;
+            background: var(--dark);
+            color: #f5f5f7;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .footer-col h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 1px;
+            background: #fff;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #a1a1a6;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: #fff;
+        }
+        
+        .social-links.footer-social a {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .social-links.footer-social a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #86868b;
+            font-size: 0.9rem;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+            color: var(--dark);
+        }
+        
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100vh;
+            background: var(--primary);
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 6rem 2rem 2rem;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-nav.active {
+            right: 0;
+        }
+        
+        .mobile-nav-links {
+            list-style: none;
+        }
+        
+        .mobile-nav-links li {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mobile-nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: block;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+        
+        .mobile-nav-links a:hover {
+            color: #555;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark);
+            z-index: 1002;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .process-step:not(:last-child):after {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .showcase-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+            }
+            
+            .section-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .process-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .process-step {
+                max-width: 100%;
+            }
+            
+            .hero {
+                height: 90vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .grid-section, .process, .showcase, .testimonials, .contact {
+                padding: 5rem 0;
+            }
+            
+            .contact-info, .contact-form {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Form Status Message */
+        .form-status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            text-align: center;
+            display: none;
+        }
+
+        .form-status.success {
+            background: #e6f7ee;
+            color: #0d8a4e;
+            border: 1px solid #a1e6c5;
+            display: block;
+        }
+
+        .form-status.error {
+            background: #fdecea;
+            color: #d93025;
+            border: 1px solid #f5c2c7;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">HYPERZ<span>.</span></a>
+                <ul class="nav-links">
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#process">Process</a></li>
+                    <li><a href="#work">Work</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="close-btn">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul class="mobile-nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div id="vanta-canvas"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>PRECISION IN EVERY <br>VISUAL ELEMENT</h1>
+                <p>Hyperz Visuals creates meticulously crafted brand experiences through minimalist design and visual storytelling. We transform concepts into timeless visual narratives.</p>
+                <div class="hero-btns">
+                    <button class="btn btn-primary">View Portfolio</button>
+                    <button class="btn btn-secondary">Get in Touch</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="grid-section" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>ELITE VISUAL SERVICES</h2>
+                <p>We deliver precision-crafted visual solutions for brands that value minimalism and excellence.</p>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <div class="icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <h3>Motion Design</h3>
+                    <p>Elegant animations and motion graphics that communicate with clarity and sophistication.</p>
+                    <button class="btn btn-secondary">Learn More</button>
+                </div>
+                <div class="grid-item">
+                    <div class="icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3>3D Visualization</h3>
+                    <p>Precise 3D renders that bring products to life with minimalist perfection.</p>
+                    <button class="btn btn-secondary">Learn More</button>
+                </div>
+                <div class="grid-item">
+                    <div class="icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h3>Brand Identity</h3>
+                    <p>Minimalist visual systems that establish a powerful and cohesive brand presence.</p>
+                    <button class="btn btn-secondary">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process" id="process">
+        <div class="container">
+            <div class="section-header">
+                <h2>OUR CREATIVE PROCESS</h2>
+                <p>Our methodical approach ensures every project achieves visual perfection and strategic impact.</p>
+            </div>
+            <div class="process-container">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3>Discover</h3>
+                    <p>Deep dive into your brand, goals, and audience to establish strategic foundations.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3>Conceptualize</h3>
+                    <p>Develop visual concepts and mood boards that align with your brand vision.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3>Create</h3>
+                    <p>Craft premium visuals with meticulous attention to detail and technical precision.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h3>Deliver</h3>
+                    <p>Refine and perfect the final product for maximum impact and effectiveness.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase Section with YouTube Embeds -->
+    <section class="showcase" id="work">
+        <div class="container">
+            <div class="section-header">
+                <h2>OUR CREATIVE PROCESS IN ACTION</h2>
+                <p>See how we transform concepts into stunning visual experiences.</p>
+            </div>
+            
+            <div class="showcase-container">
+                <div class="showcase-content">
+                    <h2>MINIMALIST MOTION DESIGN</h2>
+                    <p>Watch how we create elegant animations and motion graphics that communicate with clarity and sophistication. This video demonstrates our approach to minimalist motion design.</p>
+                </div>
+                <div class="showcase-image">
+                    <iframe src="https://www.youtube.com/embed/wgNU9t8EK1k" title="Minimalist Motion Design" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <div class="showcase-container" style="margin-top: 6rem;">
+                <div class="showcase-image">
+                    <iframe src="https://www.youtube.com/embed/oeE8Epldf5c" title="3D Visualization Process" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="showcase-content">
+                    <h2>3D VISUALIZATION PROCESS</h2>
+                    <p>Discover our workflow for creating precise 3D renders that bring products to life with minimalist perfection. This behind-the-scenes look reveals our technical expertise.</p>
+                </div>
+            </div>
+            
+            <div class="showcase-container" style="margin-top: 6rem;">
+                <div class="showcase-content">
+                    <h2>BRAND IDENTITY DEVELOPMENT</h2>
+                    <p>Learn how we develop minimalist visual systems that establish powerful brand identities. This case study showcases our approach to cohesive brand storytelling.</p>
+                </div>
+                <div class="showcase-image">
+                    <iframe src="https://www.youtube.com/embed/TQp_JFKYMV0" title="Brand Identity Development" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2>RECENT PROJECTS</h2>
+                <p>Explore our latest visual creations that have transformed brands and captivated audiences.</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-video-item">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/mRvaK1GCh_Q" 
+                                title="Project Nova" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <h3>EFX EDIT</h3>
+                        <p>After effects used for surreal crafting of visuals.</p>
+                    </div>
+                </div>
+                
+                <div class="portfolio-video-item">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/5HVSYeo7TzI" 
+                                title="Elysium Tech" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <h3>Learning Lately</h3>
+                        <p>Informative reel edit for educational purpose.</p>
+                    </div>
+                </div>
+                
+                <div class="portfolio-video-item">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/vVWGoWo1otE" 
+                                title="Introductory Reel" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <h3>Introductory Reel</h3>
+                        <p>Motion graphics Visualization</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <h3>187+</h3>
+                    <p>Projects Completed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>99%</h3>
+                    <p>Client Satisfaction</p>
+                </div>
+                <div class="stat-item">
+                    <h3>2</h3>
+                    <p>Industry Awards</p>
+                </div>
+                <div class="stat-item">
+                    <h3>2</h3>
+                    <p>Years Experience</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>CLIENT TESTIMONIALS</h2>
+                <p>Hear what industry leaders say about working with Hyperz Visuals.</p>
+            </div>
+            <div class="testimonial-container">
+                <div class="testimonial">
+                    <p>"Hyperz Visuals transformed our brand with their exceptional minimalist approach. Their attention to detail and commitment to precision is unmatched. The visual identity they created has become our most valuable asset."</p>
+                    <div class="client">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Client">
+                        <div class="client-info">
+                            <h4>Emma Rodriguez</h4>
+                            <p>Creative Director, Aether Collective</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2>READY TO ELEVATE YOUR VISUALS?</h2>
+                    <p>Connect with our team to discuss your project and discover how Hyperz Visuals can transform your brand with precision and elegance.</p>
+                    
+                    <div class="contact-details">
+                        <p><i class="fas fa-envelope"></i> hyperzvisuals.contact
+                        @gmail.com</p>
+                        <p><i class="fas fa-phone"></i> +91 9211820857</p>
+                        <p><i class="fas fa-map-marker-alt"></i> New Delhi, India</p>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-behance"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h2>SEND US A MESSAGE</h2>
+                    <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+                        <input type="hidden" name="access_key" value="37498b55-99bc-48b2-aa28-f057578604b8">
+                        <input type="hidden" name="subject" value="New Message from Hyperz Visuals Website">
+                        <input type="hidden" name="from_name" value="Hyperz Visuals Contact Form">
+                        <input type="checkbox" name="botcheck" style="display: none;">
+                        
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service">Service Interest</label>
+                            <select id="service" name="service" class="form-control" required>
+                                <option value="">Select a service</option>
+                                <option value="motion">Motion Design</option>
+                                <option value="3d">3D Visualization</option>
+                                <option value="brand">Brand Identity</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                        <div id="formStatus" class="form-status"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>HYPERZ VISUALS</h3>
+                    <p>Creating elite visual experiences through minimalist design and precision execution.</p>
+                    <div class="social-links footer-social">
+                        <a href="#"><i class="fab fa-behance"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Motion Design</a></li>
+                        <li><a href="#">3D Visualization</a></li>
+                        <li><a href="#">Brand Identity</a></li>
+                        <li><a href="#">UI/UX Design</a></li>
+                        <li><a href="#">Art Direction</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#work">Our Work</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#services">Insights</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to receive industry insights and project updates.</p>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Your Email">
+                        </div>
+                        <button class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Hyperz Visuals. All rights reserved. Crafted with precision in India.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Vanta.js 3D Background
+        VANTA.NET({
+            el: "#vanta-canvas",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x0,
+            backgroundColor: 0xf5f5f7,
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 18.00
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                document.getElementById('mobileNav').classList.remove('active');
+                document.body.classList.remove('menu-open');
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const closeBtn = document.querySelector('.close-btn');
+        const mobileNav = document.getElementById('mobileNav');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+            document.body.classList.add('menu-open');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            mobileNav.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        });
+
+        // Close mobile menu when clicking links
+        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileNav.contains(e.target) && 
+                e.target !== mobileMenuBtn && 
+                !mobileMenuBtn.contains(e.target)) {
+                mobileNav.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        });
+
+        // Web3Forms integration
+        const contactForm = document.getElementById('contactForm');
+        const formStatus = document.getElementById('formStatus');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerText;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitButton.disabled = true;
+            
+            const formData = new FormData(this);
+            
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    formStatus.textContent = 'Thank you for your message! We will get back to you soon.';
+                    formStatus.className = 'form-status success';
+                    contactForm.reset();
+                } else {
+                    formStatus.textContent = 'There was an error sending your message. Please try again.';
+                    formStatus.className = 'form-status error';
+                }
+            })
+            .catch(error => {
+                formStatus.textContent = 'There was a connection error. Please try again later.';
+                formStatus.className = 'form-status error';
+            })
+            .finally(() => {
+                submitButton.innerText = originalButtonText;
+                submitButton.disabled = false;
+                
+                // Scroll to form status
+                formStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add fade-in animation to sections
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+            
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
