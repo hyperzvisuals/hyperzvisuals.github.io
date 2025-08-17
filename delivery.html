@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hyperz — Final Delivery Vault</title>
+
+  <!-- Editor fallback -> Space Grotesk for a similar editorial look -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --fg:#0a0a0a;
+      --muted:#666666;
+      --line:#e9e9e9;
+      --accent:#0a0a0a;
+      --radius:14px;
+      --shadow: 0 14px 40px rgba(10,10,10,0.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family: "Editor", "Space Grotesk", "Roboto Mono", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      letter-spacing:0.1px;
+    }
+
+    /* Container */
+    .wrap{max-width:1100px;margin:0 auto;padding:34px 20px 120px}
+
+    /* Gate */
+    .gateWrap{min-height:60vh;display:flex;align-items:center;justify-content:center}
+    .gateCard{width:min(640px,96vw);border:1px solid var(--line);border-radius:12px;padding:28px;background:#fff;box-shadow:var(--shadow);text-align:center}
+    .gateCard h2{margin:0 0 8px;font-size:22px}
+    .gateCard p{margin:0 0 18px;color:var(--muted)}
+    .input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);font-size:16px;margin-bottom:12px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--accent);color:#fff;text-decoration:none;font-weight:700;cursor:pointer}
+    .btnGhost{background:#fff;color:var(--fg);border:1px solid var(--fg)}
+
+    .err{color:#b00020;font-size:13px;min-height:18px}
+
+    /* Header */
+    header{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:22px}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.4px}
+    .brand small{color:var(--muted)}
+
+    /* Vault */
+    .card{border:1px solid var(--line);border-radius:12px;padding:20px;background:#fff;box-shadow:var(--shadow)}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+
+    .title{font-size:18px;margin:0 0 10px;font-weight:700}
+    .metaRow{display:flex;flex-wrap:wrap;gap:10px 18px;color:var(--muted);font-size:13px;margin-bottom:12px}
+
+    .player{border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000}
+    .player iframe{width:100%;height:420px;border:0;display:block}
+
+    /* Files */
+    .fileRow{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;border:1px solid var(--line);margin-bottom:10px}
+    .fileLabel{display:flex;gap:12px;align-items:center}
+    .fileName{font-weight:700}
+    .fileMeta{font-size:13px;color:var(--muted)}
+    .downloadBtn{padding:10px 14px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;border:1px solid var(--fg)}
+
+    /* small */
+    .small{font-size:13px;color:var(--muted);margin-top:10px}
+    .mono{font-family:"Roboto Mono",monospace;font-size:13px;color:var(--muted)}
+
+    /* Footer fixed */
+    footer{position:fixed;left:0;right:0;bottom:0;border-top:1px solid var(--line);background:#fff;padding:12px}
+    .footInner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .footInner a{color:inherit;text-decoration:none}
+
+    /* subtle animations */
+    .fade{animation:fadeIn .36s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* anti-download hint */
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+
+    /* whatsapp floating on small screens */
+    @media (max-width:700px){ .player iframe{height:260px} .downloadBtn{width:100%} .fileRow{flex-direction:column;align-items:flex-start;gap:10px} }
+
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div>
+          <h1 id="vaultTitle">Final Delivery Vault</h1>
+          <small id="vaultSub">Secure handover — Hyperz Visuals</small>
+        </div>
+        <div><small id="clientIdLabel">—</small></div>
+      </div>
+    </header>
+
+    <!-- Gate -->
+    <div id="gate" class="gateWrap">
+      <div class="gateCard fade">
+        <h2>Enter your Delivery Code</h2>
+        <p>Use the code provided by Hyperz to unlock your final delivery vault.</p>
+        <input id="codeInput" class="input" placeholder="Enter delivery code" />
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">
+          <button id="enterBtn" class="btn">Unlock Vault</button>
+          <a id="contactSupport" class="btn btnGhost" href="#" target="_blank">Need help?</a>
+        </div>
+        <div class="err" id="gateErr"></div>
+      </div>
+    </div>
+
+    <!-- Vault content (hidden until unlocked) -->
+    <div id="vault" style="display:none" class="fade">
+      <div class="card">
+        <div class="grid">
+          <div>
+            <div class="title" id="clientName">Client Name</div>
+            <div class="metaRow">
+              <div><b>Project:</b> <span id="projectTitle">—</span></div>
+              <div><b>Version:</b> <span id="version">—</span></div>
+              <div><b>Delivered:</b> <span id="deliveredOn">—</span></div>
+            </div>
+            <div class="divider" style="height:1px;background:var(--line;margin:12px 0)"></div>
+            <div class="small" id="projectNote">Preview is compressed for streaming. Use the download button to get the full master.</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end">
+            <div class="metaRow" style="justify-content:flex-end">
+              <div class="mono" id="resolution">—</div>
+              <div class="mono" id="codec">—</div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a id="ackBtn" class="btn" target="_blank">Acknowledge</a>
+              <a id="issueBtn" class="btn btnGhost" target="_blank">Raise Issue</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:18px"></div>
+
+      <!-- Preview -->
+      <div class="card">
+        <div class="title">Final Preview</div>
+        <div style="height:14px"></div>
+        <div class="player" id="playerWrap">
+          <iframe id="vimeo" src="" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="hint">Watermark (if shown) is baked into preview. This preview is for verification only.</div>
+      </div>
+
+      <div style="height:18px"></div>
+
+      <!-- Files -->
+      <div class="card">
+        <div class="title">Final Files</div>
+        <div style="height:12px"></div>
+        <div id="filesList"></div>
+
+        <div style="height:12px"></div>
+        <div class="mono">Checksum (SHA-256): <span id="checksum">—</span> <button id="copyHash" class="btn btnGhost" style="margin-left:12px">Copy</button></div>
+        <div class="small" style="margin-top:10px">All downloads are delivered via Google Drive links. If you need an alternate transfer (WeTransfer / Dropbox ZIP), contact us.</div>
+      </div>
+
+      <div style="height:18px"></div>
+
+      <!-- Terms -->
+      <div class="card">
+        <div class="title">Usage Terms</div>
+        <div class="small">
+          <ul style="margin:0 0 0 18px;padding:0">
+            <li>Client holds non-exclusive usage as defined in SOW unless otherwise agreed.</li>
+            <li>Redistribution, resale or public upload without permission is not allowed.</li>
+            <li>Keep the checksum to verify file integrity after download.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div> <!-- /vault -->
+
+  </div> <!-- /wrap -->
+
+  <footer>
+    <div class="footInner">
+      <div class="mono">© <span id="year"></span> Hyperz Visuals — Final Delivery Vault</div>
+      <div class="mono"><a href="https://hyperzvisuals.github.io" target="_blank">hyperzvisuals.com</a></div>
+    </div>
+  </footer>
+
+  <script>
+    /**************************************************************************
+     * DATA: edit deliveries here. Use Google Drive/view links and Vimeo ID.
+     * Each delivery object: id -> { code, name, projectTitle, version, deliveredOn,
+     * vimeoId, vimeoParams, files: [{name,size,link}], checksum, whatsapp, ackText, issueText, resolution, codec }
+     **************************************************************************/
+    const deliveries = {
+      "clientA": {
+        code: "DELIVERY123",
+        name: "Apex Nutrition",
+        projectTitle: "30s Product Film",
+        version: "v1.0",
+        deliveredOn: "2025-08-17",
+        vimeoId: "76979871",
+        vimeoParams: "?h=6c89f1f6d9&badge=0&byline=0&title=0&portrait=0",
+        files: [
+          { name: "Apex_ProductFilm_v1.0_4K_ProRes.mov", size: "3.2 GB", link: "https://drive.google.com/file/d/FILEID/view?usp=sharing" },
+          { name: "Apex_SocialEdits_1080p.zip", size: "420 MB", link: "https://drive.google.com/file/d/FILEID2/view?usp=sharing" }
+        ],
+        checksum: "9c7e6f0f2f...<paste full hash>",
+        whatsapp: "+919999999999",
+        ackText: "Hi Hyperz — I've received the final master and approve.",
+        issueText: "Hi Hyperz — I have an issue with the final master.",
+        resolution: "4K (3840×2160)",
+        codec: "ProRes 422"
+      },
+
+      "clientB": {
+        code: "DELIVERY456",
+        name: "Nova Realty",
+        projectTitle: "Property Walkthrough",
+        version: "v2.1",
+        deliveredOn: "2025-08-10",
+        vimeoId: "12345678",
+        vimeoParams: "?badge=0&byline=0&title=0",
+        files: [
+          { name: "Nova_Walkthrough_v2.1_1080p.mp4", size: "780 MB", link: "https://drive.google.com/file/d/FILEID3/view?usp=sharing" }
+        ],
+        checksum: "a1b2c3d4...<hash>",
+        whatsapp: "+919888888888",
+        ackText: "Received and approved — Nova Realty.",
+        issueText: "Found an issue in the final file — please advise.",
+        resolution: "1080p (1920×1080)",
+        codec: "H.264 High"
+      }
+    };
+
+    // Helpers
+    const $ = sel => document.querySelector(sel);
+    const params = new URLSearchParams(location.search);
+    const paramId = params.get('id');         // optional direct id
+    const paramCode = params.get('code') || params.get('pass'); // optional code in URL
+    const yearEl = $('#year'); if(yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // Anti-download casual
+    document.addEventListener('contextmenu', e=> e.preventDefault());
+    document.addEventListener('keydown', e=>{
+      const k = e.key.toLowerCase();
+      if((e.ctrlKey||e.metaKey) && ['s','u','p','c'].includes(k)) e.preventDefault();
+      if(e.key === 'F12') e.preventDefault();
+    }, true);
+
+    // Wiring support button to WhatsApp (generic)
+    $('#contactSupport').href = 'https://wa.me/919999999999?text=Hi%20Hyperz%20support%20–%20I%20need%20help%20with%20my%20delivery';
+
+    // Unlock logic: either via id+code in URL or code typed
+    function findByCode(code){
+      code = String(code||'').trim();
+      if(!code) return null;
+      return Object.keys(deliveries).find(k => deliveries[k].code === code) || null;
+    }
+    function mountDelivery(key){
+      const d = deliveries[key];
+      if(!d) return showError('Invalid delivery.');
+      // fill header
+      $('#clientIdLabel').textContent = `ID: ${key}`;
+      $('#clientName').textContent = d.name;
+      $('#projectTitle').textContent = d.projectTitle;
+      $('#version').textContent = d.version;
+      $('#deliveredOn').textContent = d.deliveredOn;
+      $('#resolution').textContent = d.resolution || '—';
+      $('#codec').textContent = d.codec || '—';
+
+      // Vimeo
+      const vimeoSrc = d.vimeoId ? `https://player.vimeo.com/video/${d.vimeoId}${d.vimeoParams||''}` : '';
+      $('#vimeo').src = vimeoSrc;
+
+      // Files
+      const list = $('#filesList'); list.innerHTML = '';
+      if(d.files && d.files.length){
+        d.files.forEach(f=>{
+          const row = document.createElement('div'); row.className='fileRow';
+          row.innerHTML = `
+            <div class="fileLabel">
+              <div>
+                <div class="fileName">${escapeHtml(f.name)}</div>
+                <div class="fileMeta">${escapeHtml(f.size)}</div>
+              </div>
+            </div>
+            <div>
+              <a class="downloadBtn" href="${escapeAttr(f.link)}" target="_blank" rel="noopener">Download</a>
+            </div>
+          `;
+          list.appendChild(row);
+        });
+      } else {
+        list.innerHTML = '<div class="small">No final files attached.</div>';
+      }
+
+      // checksum
+      $('#checksum').textContent = d.checksum || '—';
+      $('#copyHash').onclick = ()=> {
+        if(d.checksum) navigator.clipboard?.writeText(d.checksum);
+      };
+
+      // whatsapp links
+      const waNum = (d.whatsapp||'').replace(/[^\d+]/g,'');
+      $('#ackBtn').href = `https://wa.me/${waNum.replace('+','')}?text=${encodeURIComponent(d.ackText||'Acknowledged: I have received the final master.')}`;
+      $('#issueBtn').href = `https://wa.me/${waNum.replace('+','')}?text=${encodeURIComponent(d.issueText||'Issue: I need help with the final master.')}`;
+
+      // show vault, hide gate
+      $('#gate').style.display = 'none';
+      $('#vault').style.display = 'block';
+      // update document title
+      document.title = `${d.name} — Final Delivery | Hyperz Visuals`;
+    }
+
+    function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function escapeAttr(s=''){ return String(s).replace(/"/g,'&quot;'); }
+
+    function showError(msg){
+      $('#gateErr').textContent = msg;
+    }
+
+    // Attempt auto-unlock via URL params
+    (function tryAutoUnlock(){
+      if(paramId && paramCode){
+        const expected = deliveries[paramId];
+        if(expected && expected.code === paramCode){
+          mountDelivery(paramId);
+          return;
+        }
+      }
+      // else if code param only, try to find matching delivery
+      if(paramCode){
+        const foundKey = findByCode(paramCode);
+        if(foundKey) { mountDelivery(foundKey); return; }
+      }
+      // else show gate
+      $('#gate').style.display = 'flex';
+    })();
+
+    // Enter button handler
+    $('#enterBtn').addEventListener('click', ()=> {
+      const code = $('#codeInput').value.trim();
+      if(!code){ showError('Enter a valid delivery code'); return; }
+      const key = findByCode(code);
+      if(!key){ showError('Code not recognized. Check the code and try again.'); return; }
+      // success
+      mountDelivery(key);
+    });
+
+    // allow Enter key
+    $('#codeInput').addEventListener('keydown', (e)=> { if(e.key === 'Enter') $('#enterBtn').click(); });
+
+  </script>
+</body>
+  </html>
