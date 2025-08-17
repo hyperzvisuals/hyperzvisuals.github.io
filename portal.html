@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hyperz Visuals — Client Motion Portal</title>
+  <meta name="theme-color" content="#ffffff" />
+  <style>
+    /* ===== Base / Theme ===== */
+    :root {
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --muted: #666;
+      --line: #e9e9e9;
+      --accent: #0a0a0a; /* black accents */
+      --card: #fcfcfc;
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Editor", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      letter-spacing: 0.1px;
+    }
+
+    a { color: var(--fg); text-decoration: none; }
+    .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+    /* ===== Header ===== */
+    .header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(255,255,255,.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .dot { width: 12px; height: 12px; border-radius: 999px; background: var(--fg); }
+    .brand h1 { font-size: 16px; font-weight: 700; margin: 0; letter-spacing: .6px; text-transform: uppercase; }
+    .subtitle { font-size: 12px; color: var(--muted); }
+
+    /* ===== Hero / Welcome ===== */
+    .hero {
+      display: grid; gap: 14px; margin-top: 24px; margin-bottom: 24px;
+      padding: 24px; border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--card); box-shadow: var(--shadow);
+      animation: fadeIn .5s ease both;
+    }
+    .kicker { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .clientName { font-size: clamp(24px, 5vw, 40px); font-weight: 800; line-height: 1.05; }
+    .projectTitle { font-size: clamp(16px, 3.4vw, 22px); color: var(--muted); }
+
+    .divider {
+      height: 2px; width: 100%; background: linear-gradient(90deg, var(--fg), transparent);
+      opacity: .08; margin-top: 4px;
+    }
+
+    /* ===== Grid ===== */
+    .grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    /* ===== Cards ===== */
+    .card {
+      border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg);
+      box-shadow: var(--shadow); overflow: hidden;
+      animation: rise .5s ease both;
+    }
+    .card h3 { margin: 0; padding: 18px 20px; border-bottom: 1px solid var(--line); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+    .card .content { padding: 16px 20px; }
+
+    /* ===== Timeline ===== */
+    .timeline { display: grid; gap: 12px; }
+    .tlItem { position: relative; padding: 14px 14px 14px 42px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .tlItem:before { content: ""; position: absolute; left: 18px; top: 18px; width: 10px; height: 10px; border-radius: 999px; background: var(--fg); }
+    .tlMeta { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .tlText { font-size: 14px; }
+
+    /* ===== Progress ===== */
+    .progressWrap { display: grid; gap: 10px; }
+    .progressBar { height: 10px; background: #f1f1f1; border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+    .progress {
+      height: 100%; width: 0%; background: var(--fg);
+      transform-origin: left; transition: width .8s ease;
+    }
+    .progressLabel { font-size: 12px; color: var(--muted); }
+
+    /* ===== Video Player (Vimeo) ===== */
+    .playerWrap { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: #000; }
+    .player {
+      position: relative; width: 100%; aspect-ratio: 16/9; display: block; background: #000;
+    }
+    .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    /* Watermark overlay */
+    .wm {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;
+      background: repeating-linear-gradient(125deg, rgba(255,255,255,.0) 0 160px, rgba(0,0,0,.0) 160px 320px);
+    }
+    .wm > span {
+      position: absolute; font-weight: 800; color: rgba(255,255,255,.28);
+      font-size: clamp(16px, 2.6vw, 28px); letter-spacing: .5px; text-transform: uppercase;
+      animation: drift 18s linear infinite;
+      user-select: none;
+    }
+    @keyframes drift { from { transform: translate(-20%, -20%) rotate(-12deg); } to { transform: translate(120%, 120%) rotate(-12deg); } }
+
+    /* ===== Next Milestones / Downloads ===== */
+    .list { display: grid; gap: 10px; }
+    .listItem { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+    .listItem small { color: var(--muted); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; border: 1px solid #111; background: #111; color: #fff; font-size: 13px; cursor: pointer; transition: transform .08s ease, opacity .2s ease; }
+    .btn:active { transform: translateY(1px); }
+    .btnGhost { background: transparent; color: #111; }
+
+    /* ===== Floating WhatsApp ===== */
+    .fab {
+      position: fixed; bottom: 18px; right: 18px; z-index: 60;
+      display: inline-flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 999px;
+      background: #111; color: #fff; border: 1px solid #111; box-shadow: var(--shadow);
+    }
+    .fab svg { width: 18px; height: 18px; }
+
+    /* ===== Footer ===== */
+    footer { margin-top: 28px; padding: 18px 0 36px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+
+    /* ===== Animations ===== */
+    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== Utilities ===== */
+    .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .pill { border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="nav container">
+      <div class="brand">
+        <span class="dot"></span>
+        <div>
+          <h1>Hyperz Visuals</h1>
+          <div class="subtitle">Client Motion Portal</div>
+        </div>
+      </div>
+      <div class="row">
+        <span class="pill" id="clientIdPill">—</span>
+        <a class="pill" href="/" title="Back to site">Home</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="kicker">Welcome</div>
+      <div class="clientName" id="clientName">Client Name</div>
+      <div class="projectTitle" id="projectTitle">Project Title</div>
+      <div class="divider"></div>
+      <div class="row">
+        <span class="pill" id="projectType">—</span>
+        <span class="pill" id="projectStart">—</span>
+        <span class="pill" id="projectETA">—</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="left">
+        <!-- Updates timeline -->
+        <article class="card" style="animation-delay: .05s">
+          <h3>Project Updates</h3>
+          <div class="content">
+            <div class="timeline" id="updates"></div>
+          </div>
+        </article>
+
+        <!-- Video player -->
+        <article class="card" style="margin-top: 24px; animation-delay: .1s">
+          <h3>Preview Cut</h3>
+          <div class="content">
+            <div class="playerWrap">
+              <div class="player" id="player">
+                <!-- Vimeo iframe injected by JS -->
+                <div class="wm" id="wm"><span id="wmText">HYPERZ VISUALS</span></div>
+              </div>
+            </div>
+            <div class="row" style="margin-top: 12px; justify-content: space-between">
+              <small id="previewNote">For review only. Do not distribute.</small>
+              <button class="btn btnGhost" id="reportIssue">Report an issue</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="right">
+        <!-- Progress -->
+        <article class="card">
+          <h3>Progress</h3>
+          <div class="content">
+            <div class="progressWrap">
+              <div class="progressBar"><div class="progress" id="progress"></div></div>
+              <div class="progressLabel" id="progressLabel">0% complete</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Downloads -->
+        <article class="card" style="margin-top: 24px">
+          <h3>Deliverables</h3>
+          <div class="content">
+            <div class="list" id="deliverables"></div>
+          </div>
+        </article>
+
+        <!-- Next Milestones -->
+        <article class="card" style="margin-top: 24px">
+          <h3>Next Milestones</h3>
+          <div class="content">
+            <div class="list" id="milestones"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Hyperz Visuals — Confidential client dashboard. For access issues, contact <a href="mailto:contact@hyperzvisuals.com">contact@hyperzvisuals.com</a>.
+    </footer>
+  </main>
+
+  <!-- Floating WhatsApp button -->
+  <a id="whatsappBtn" class="fab" href="#" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c-5.51 0-10 4.49-10 10 0 1.77.47 3.5 1.37 5.02L2 22l5.11-1.33A9.96 9.96 0 0 0 12 22c5.51 0 10-4.49 10-10S17.51 2 12 2m5.47 14.21c-.23.65-1.35 1.24-1.86 1.27-.48.03-1.09.05-1.76-.11-.4-.1-.91-.29-1.58-.56-2.78-1.16-4.59-3.85-4.73-4.04-.14-.19-1.13-1.5-1.13-2.86 0-1.35.69-2.01.94-2.28.25-.26.55-.32.73-.32h.52c.17 0 .4.03.61.47.23.55.78 1.89.85 2.03.07.14.11.3.02.49-.09.19-.14.3-.28.47-.14.17-.29.38-.41.51-.14.14-.29.29-.12.57.17.28.77 1.26 1.65 2.04 1.13 1.01 2.09 1.33 2.39 1.48.3.15.48.13.66-.07.21-.23.47-.62.74-1 .19-.27.43-.31.68-.21.25.09 1.58.75 1.85.88.27.13.45.21.51.33.06.12.06.69-.17 1.34z"/></svg>
+    <span>Raise a meeting</span>
+  </a>
+
+  <script>
+    // ====== DATA STORE (multi-client) ======
+    // Add/modify clients here. Link with ?id=<key>
+    const clients = {
+      "client1": {
+        name: "Aarav Mehta",
+        projectTitle: "Brand Film — Urban Coffee Co.",
+        projectType: "60s Ad Film",
+        startDate: "2025-08-01",
+        eta: "2025-08-28",
+        progress: 62,
+        whatsapp: "919999999999", // <-- change to your WhatsApp number including country code (no +)
+        whatsappNote: "Hello Hyperz team, I'd like to schedule a review call for my project.",
+        vimeoId: "76979871", // sample Vimeo ID; replace per client
+        watermark: "Hyperz Visuals — Aarav",
+        updates: [
+          { date: "2025-08-02", text: "Kickoff complete. Script & moodboard approved." },
+          { date: "2025-08-05", text: "Shoot dates locked. Crew + locations finalized." },
+          { date: "2025-08-14", text: "Principal shoot done. Ingest & sync underway." },
+          { date: "2025-08-18", text: "First rough cut assembled. Awaiting internal review." },
+          { date: "2025-08-20", text: "Color test & sound bed exploration in progress." }
+        ],
+        deliverables: [
+          { label: "Moodboard PDF", url: "#" },
+          { label: "First Cut (low-res) — Vimeo", url: "https://vimeo.com/76979871" }
+        ],
+        milestones: [
+          { label: "Client Review — Cut v1", due: "2025-08-22" },
+          { label: "Color Grade + Mix", due: "2025-08-25" },
+          { label: "Final Master Export", due: "2025-08-28" }
+        ]
+      },
+      "client2": {
+        name: "Sara Khan",
+        projectTitle: "Music Video — Night Drive",
+        projectType: "MV Edit",
+        startDate: "2025-07-20",
+        eta: "2025-08-10",
+        progress: 88,
+        whatsapp: "919888888888",
+        whatsappNote: "Hey Hyperz, can we lock a review slot for my music video?",
+        vimeoId: "357274789", // sample ID
+        watermark: "Hyperz Visuals — Sara",
+        updates: [
+          { date: "2025-07-21", text: "Footage received. Organizing bins & selects." },
+          { date: "2025-07-25", text: "Performance cut locked. B-roll weaving." },
+          { date: "2025-07-30", text: "Tempo sync + stylized transitions pass done." },
+          { date: "2025-08-05", text: "Color look approved. Final polish pass in progress." }
+        ],
+        deliverables: [
+          { label: "Lookbook PNGs", url: "#" },
+          { label: "Cut v1 (private)", url: "https://vimeo.com/357274789" }
+        ],
+        milestones: [
+          { label: "Final Client Sign-off", due: "2025-08-10" }
+        ]
+      }
+    };
+
+    // ====== Helpers ======
+    const qs = (s, el=document) => el.querySelector(s);
+    const qsa = (s, el=document) => [...el.querySelectorAll(s)];
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id') || 'client1';
+    const data = clients[id];
+
+    // Fallback if id not found
+    if (!data) {
+      document.body.innerHTML = `<div style="padding:32px;font-family:ui-sans-serif,system-ui">Unknown client id: <b>${id}</b>.\n<br/><br/>Use one of: ${Object.keys(clients).map(k=>`<code>?id=${k}</code>`).join(' ')}</div>`;
+      throw new Error('Invalid client id');
+    }
+
+    // ====== Populate header/hero ======
+    qs('#clientIdPill').textContent = `ID: ${id}`;
+    qs('#clientName').textContent = data.name;
+    qs('#projectTitle').textContent = data.projectTitle;
+    qs('#projectType').textContent = data.projectType;
+    qs('#projectStart').textContent = `Start · ${fmtDate(data.startDate)}`;
+    qs('#projectETA').textContent = `ETA · ${fmtDate(data.eta)}`;
+
+    // ====== Progress ======
+    const prog = Math.max(0, Math.min(100, Number(data.progress)||0));
+    qs('#progress').style.width = prog + '%';
+    qs('#progressLabel').textContent = `${prog}% complete`;
+
+    // ====== Updates timeline ======
+    const updatesEl = qs('#updates');
+    data.updates.forEach(u => {
+      const item = document.createElement('div');
+      item.className = 'tlItem';
+      item.innerHTML = `<div class="tlMeta">${fmtDate(u.date)}</div><div class="tlText">${escapeHtml(u.text)}</div>`;
+      updatesEl.appendChild(item);
+    });
+
+    // ====== Deliverables ======
+    const delEl = qs('#deliverables');
+    if (data.deliverables?.length) {
+      data.deliverables.forEach(d => {
+        const li = document.createElement('div');
+        li.className = 'listItem';
+        li.innerHTML = `<div>${escapeHtml(d.label)}<br><small>Preview/Download</small></div>
+                        <a class="btn" href="${d.url}" target="_blank" rel="noopener">Open</a>`;
+        delEl.appendChild(li);
+      });
+    } else {
+      delEl.innerHTML = '<small>No deliverables yet.</small>';
+    }
+
+    // ====== Milestones ======
+    const msEl = qs('#milestones');
+    if (data.milestones?.length) {
+      data.milestones.forEach(m => {
+        const li = document.createElement('div');
+        li.className = 'listItem';
+        li.innerHTML = `<div>${escapeHtml(m.label)}<br><small>Due · ${fmtDate(m.due)}</small></div>
+                        <span class="pill">Upcoming</span>`;
+        msEl.appendChild(li);
+      });
+    } else {
+      msEl.innerHTML = '<small>No upcoming milestones.</small>';
+    }
+
+    // ====== Vimeo embed ======
+    const vimeoId = (data.vimeoId||'').replace(/[^0-9]/g,'');
+    if (vimeoId) {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://player.vimeo.com/video/${vimeoId}?title=0&byline=0&portrait=0&muted=0&transparent=0&dnt=1`;
+      iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', '');
+      qs('#player').prepend(iframe);
+    } else {
+      qs('#player').innerHTML = '<div style="color:#fff;padding:20px">No preview available.</div>';
+    }
+
+    // Watermark text
+    qs('#wmText').textContent = (data.watermark || 'HYPERZ VISUALS');
+
+    // ====== WhatsApp meeting button ======
+    const msg = encodeURIComponent(data.whatsappNote || 'Hello Hyperz team, I\'d like to schedule a meeting about my project.');
+    const waLink = `https://wa.me/${data.whatsapp}?text=${msg}`;
+    qs('#whatsappBtn').href = waLink;
+
+    // Report issue -> also WhatsApp for now
+    qs('#reportIssue').addEventListener('click', () => {
+      const issue = encodeURIComponent('Hi Hyperz, I found an issue in the current cut. Can we review?');
+      window.open(`https://wa.me/${data.whatsapp}?text=${issue}`, '_blank', 'noopener');
+    });
+
+    // Footer year
+    qs('#year').textContent = new Date().getFullYear();
+
+    // ====== Anti-download hardening (best-effort) ======
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+    document.addEventListener('keydown', (e) => {
+      const k = e.key.toLowerCase();
+      if (e.ctrlKey && (k === 's' || k === 'u' || k === 'p')) e.preventDefault(); // save / view-source / print
+      if (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'c' || k === 'j')) e.preventDefault(); // devtools combos
+      if (k === 'f12') e.preventDefault();
+    }, true);
+
+    // Optional: dark overlay on blur to discourage screen capture while alt-tabbing
+    document.addEventListener('visibilitychange', () => {
+      const wm = qs('#wm');
+      if (document.hidden) wm.style.background = 'linear-gradient(45deg, rgba(0,0,0,.35), rgba(0,0,0,.35))';
+      else wm.style.background = 'repeating-linear-gradient(125deg, rgba(255,255,255,.0) 0 160px, rgba(0,0,0,.0) 160px 320px)';
+    });
+
+    // ====== Utils ======
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+    }
+    function escapeHtml(str='') { return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s])); }
+  </script>
+</body>
+  </html>
+  
