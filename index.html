@@ -1516,6 +1516,32 @@ startAutoPlay();
                 observer.observe(section);
             });
         });
+        // === AUTO-TESTIMONIAL CONTROLLER (PLUG-AND-PLAY) ===
+
+// Start your auto testimonial slider (example)
+let autoTestimonial = setInterval(nextTestimonial, 5000); // 5s per slide
+
+// Function to stop auto sliding
+function stopAutoTestimonial() {
+    if (autoTestimonial) {
+        clearInterval(autoTestimonial);
+        autoTestimonial = null;
+    }
+}
+
+// Detect all videos on the page
+document.querySelectorAll('video').forEach(video => {
+    video.addEventListener('play', () => {
+        stopAutoTestimonial(); // Stop auto slider when any video plays
+    });
+
+    video.addEventListener('pause', () => {
+        // Optional: resume auto slider when video pauses
+        if (!autoTestimonial) {
+            autoTestimonial = setInterval(nextTestimonial, 5000);
+        }
+    });
+});
     </script>
 </body>
 </html>
