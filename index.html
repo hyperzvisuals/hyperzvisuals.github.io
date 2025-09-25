@@ -1099,26 +1099,167 @@
     </section>
 
     <!-- Testimonials -->
-    <section class="testimonials" id="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>CLIENT TESTIMONIALS</h2>
-                <p>Hear what industry leaders say about working with Hyperz Visuals.</p>
-            </div>
-            <div class="testimonial-container">
-                <div class="testimonial">
-                    <p>"Hyperz Visuals transformed our brand with their exceptional minimalist approach. Their attention to detail and commitment to precision is unmatched. The visual identity they created has become our most valuable asset."</p>
-                    <div class="client">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Client">
-                        <div class="client-info">
-                            <h4>Emma Rodriguez</h4>
-                            <p>Creative Director, Aether Collective</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Dynamic Testimonials Section -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <h2>CLIENT TESTIMONIALS</h2>
+      <p>Hear what industry leaders say about working with Hyperz Visuals.</p>
+    </div>
+
+    <div class="testimonial-slider">
+      <!-- Slides will be injected dynamically -->
+    </div>
+
+    <!-- Navigation -->
+    <div class="testimonial-nav">
+      <button id="prevTestimonial"><i class="fas fa-chevron-left"></i></button>
+      <button id="nextTestimonial"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<style>
+.testimonial-slider {
+  position: relative;
+  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.testimonial-slide {
+  display: none;
+  animation: fadeIn 0.6s ease;
+}
+.testimonial-slide.active {
+  display: block;
+}
+.testimonial-slide p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+.testimonial-slide iframe {
+  width: 100%;
+  height: 400px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+.testimonial-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.testimonial-nav button {
+  border: none;
+  background: var(--dark);
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.testimonial-nav button:hover {
+  background: #000;
+  transform: scale(1.1);
+}
+@keyframes fadeIn {
+  from {opacity:0; transform: translateY(20px);}
+  to {opacity:1; transform: translateY(0);}
+}
+</style>
+
+<script>
+const testimonials = [
+  {
+    type: "text",
+    quote: `"Hyperz Visuals transformed our brand with their exceptional minimalist approach. Their attention to detail and commitment to precision is unmatched."`,
+    client: "Emma Rodriguez",
+    role: "Creative Director, Aether Collective",
+    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80"
+  },
+  {
+    type: "video",
+    url: "https://www.youtube.com/embed/oeE8Epldf5c",
+    client: "James Parker",
+    role: "CEO, Visionary Media"
+  },
+  {
+    type: "text",
+    quote: `"Working with Hyperz Visuals felt seamless. They created visuals that exceeded our expectations."`,
+    client: "Sophia Chen",
+    role: "Brand Strategist, Lumina Labs",
+    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80"
+  }
+];
+
+const slider = document.querySelector('.testimonial-slider');
+let current = 0;
+let autoPlayInterval;
+
+function renderTestimonials() {
+  slider.innerHTML = testimonials.map((t, i) => {
+    if (t.type === "text") {
+      return `
+      <div class="testimonial-slide ${i===0?'active':''}">
+        <p>${t.quote}</p>
+        <div class="client">
+          <img src="${t.img}" alt="${t.client}">
+          <div class="client-info">
+            <h4>${t.client}</h4>
+            <p>${t.role}</p>
+          </div>
         </div>
-    </section>
+      </div>`;
+    } else {
+      return `
+      <div class="testimonial-slide ${i===0?'active':''}">
+        <iframe src="${t.url}" frameborder="0" allowfullscreen></iframe>
+        <div class="client-info">
+          <h4>${t.client}</h4>
+          <p>${t.role}</p>
+        </div>
+      </div>`;
+    }
+  }).join('');
+}
+renderTestimonials();
+
+function showSlide(index) {
+  const slides = document.querySelectorAll('.testimonial-slide');
+  slides.forEach(s => s.classList.remove('active'));
+  slides[index].classList.add('active');
+}
+
+function nextSlide() {
+  current = (current + 1) % testimonials.length;
+  showSlide(current);
+}
+function prevSlide() {
+  current = (current - 1 + testimonials.length) % testimonials.length;
+  showSlide(current);
+}
+
+document.getElementById('prevTestimonial').addEventListener('click', () => {
+  prevSlide();
+  resetAutoPlay();
+});
+document.getElementById('nextTestimonial').addEventListener('click', () => {
+  nextSlide();
+  resetAutoPlay();
+});
+
+function startAutoPlay() {
+  autoPlayInterval = setInterval(nextSlide, 6000); // 6s
+}
+function resetAutoPlay() {
+  clearInterval(autoPlayInterval);
+  startAutoPlay();
+}
+
+startAutoPlay();
+</script>
 
     <!-- Enhanced Contact Section -->
     <section class="contact" id="contact">
