@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hyperz Visuals — Client Motion Portal</title>
   <meta name="theme-color" content="#ffffff" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
     /* ===== Base / Theme ===== */
     :root {
@@ -140,6 +141,59 @@
     /* ===== Utilities ===== */
     .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .pill { border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; font-size: 12px; color: var(--muted); }
+    /* Preloader Styles */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.preloader-content {
+    text-align: center;
+}
+
+.brand-reveal {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 4rem;
+    color: #fff;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    animation: reveal 2s ease-in-out;
+    text-transform: uppercase;
+}
+
+.loading-bar {
+    width: 200px;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    margin-top: 2rem;
+    overflow: hidden;
+}
+
+.loading-progress {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    animation: load 2s ease-in-out forwards;
+}
+
+@keyframes reveal {
+    0% { opacity: 0; letter-spacing: 0.5em; }
+    100% { opacity: 1; letter-spacing: 0.3em; }
+}
+
+@keyframes load {
+    0% { width: 0%; }
+    100% { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -240,7 +294,15 @@
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c-5.51 0-10 4.49-10 10 0 1.77.47 3.5 1.37 5.02L2 22l5.11-1.33A9.96 9.96 0 0 0 12 22c5.51 0 10-4.49 10-10S17.51 2 12 2m5.47 14.21c-.23.65-1.35 1.24-1.86 1.27-.48.03-1.09.05-1.76-.11-.4-.1-.91-.29-1.58-.56-2.78-1.16-4.59-3.85-4.73-4.04-.14-.19-1.13-1.5-1.13-2.86 0-1.35.69-2.01.94-2.28.25-.26.55-.32.73-.32h.52c.17 0 .4.03.61.47.23.55.78 1.89.85 2.03.07.14.11.3.02.49-.09.19-.14.3-.28.47-.14.17-.29.38-.41.51-.14.14-.29.29-.12.57.17.28.77 1.26 1.65 2.04 1.13 1.01 2.09 1.33 2.39 1.48.3.15.48.13.66-.07.21-.23.47-.62.74-1 .19-.27.43-.31.68-.21.25.09 1.58.75 1.85.88.27.13.45.21.51.33.06.12.06.69-.17 1.34z"/></svg>
     <span>Raise a meeting</span>
   </a>
-
+<!-- Preloader -->
+<div id="preloader" class="preloader">
+    <div class="preloader-content">
+        <h1 class="brand-reveal">HYPERZ</h1>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+</div>
   <script>
     // ====== DATA STORE (multi-client) ======
     // Add/modify clients here. Link with ?id=<key>
@@ -417,6 +479,19 @@
       return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
     }
     function escapeHtml(str='') { return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s])); }
+    // Preloader removal
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        gsap.to('#preloader', {
+            duration: 0.8,
+            opacity: 0,
+            onComplete: () => {
+                document.getElementById('preloader').style.display = 'none';
+                // Initialize your page here
+            }
+        });
+    }, 1000); // Matches your 1-second delay
+});
   </script>
 </body>
   </html>
